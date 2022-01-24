@@ -1,4 +1,4 @@
-# Aluracord - Nutris
+# Aluracord - Nutris (in development)
 
 ## About the Project
 
