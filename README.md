@@ -6,7 +6,7 @@ The project was created in the Alura React immersion. The aim was develop a disc
 
 The page result can be access in that [link](https://aluracord-nutris.vercel.app/)
 
- ![Main Page](https://github.com/willamys/saudavel_e_commerce/blob/master/telas/page.png)
+ ![Main Page](https://github.com/willamys/aluracord-nutris/blob/c1a14e2234f7da5afd1e2fcc998d27a54f217e69/Screenshot%20from%202022-01-24%2016-45-50.png)
  
 ### Resources
 
