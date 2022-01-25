@@ -1,3 +1,4 @@
+import Head from 'next/head'
 function GlobalStyle() {
   return (
     <style global jsx>{`
@@ -31,6 +32,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
+      <Head>
+        <title>NutriCord</title>
+      </Head>
       <Component {...pageProps} />
     </>
   );
