@@ -148,7 +148,7 @@ function HomePage() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={disableButton ? '' : `https://github.com/${username}.png`}
             />
             <Text
               variant="body4"
@@ -159,7 +159,7 @@ function HomePage() {
                 borderRadius: '1000px'
               }}
             >
-              {username}
+              {disableButton ? '' : username}
             </Text>
           </Box>
           {/* Photo Area */}
