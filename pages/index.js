@@ -38,6 +38,7 @@ function Title(props) {
 function HomePage() {
 
   const [username, setUsername] = useState();
+  const [disableButton, setDisableButton] = useState(true);
   const router = useRouter();
 
   return (
@@ -93,6 +94,11 @@ function HomePage() {
               value={username}
               onChange={function (event) {
                 const value = event.target.value;
+                if (value.length > 2) {
+                  setDisableButton(false);
+                } else {
+                  setDisableButton(true);
+                }
                 setUsername(value)
               }}
               fullWidth
@@ -108,6 +114,7 @@ function HomePage() {
             <Button
               type='submit'
               label='Entrar'
+              disabled={disableButton}
               fullWidth
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
