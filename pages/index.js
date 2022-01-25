@@ -93,7 +93,7 @@ function HomePage() {
 
             <TextField
               value={username}
-              onKeyPress={function (event) {
+              onChange={function (event) {
                 const value = event.target.value;
                 if (value.length > 2) {
                   setDisableButton(false);
