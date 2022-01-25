@@ -39,6 +39,7 @@ function HomePage() {
 
   const [username, setUsername] = useState();
   const [disableButton, setDisableButton] = useState(true);
+  const [fullName, setFullName] = useState();
   const router = useRouter();
 
   return (
@@ -92,13 +93,16 @@ function HomePage() {
 
             <TextField
               value={username}
-              onChange={function (event) {
+              onKeyPress={function (event) {
                 const value = event.target.value;
                 if (value.length > 2) {
                   setDisableButton(false);
                 } else {
                   setDisableButton(true);
                 }
+                fetch('https://api.github.com/users/' + value)
+                  .then(response => response.json())
+                  .then(data => setFullName(data.name));
                 setUsername(value)
               }}
               fullWidth
@@ -142,14 +146,15 @@ function HomePage() {
               flex: 1,
               minHeight: '240px',
             }}
-          >
-            <Image
-              styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px',
-              }}
-              src={disableButton ? '' : `https://github.com/${username}.png`}
-            />
+          ><a href={disableButton ? '' : `https://github.com/${username}`}>
+              <Image
+                styleSheet={{
+                  borderRadius: '50%',
+                  marginBottom: '16px',
+                }}
+                src={disableButton ? '' : `https://github.com/${username}.png`}
+              />
+            </a>
             <Text
               variant="body4"
               styleSheet={{
@@ -159,7 +164,7 @@ function HomePage() {
                 borderRadius: '1000px'
               }}
             >
-              {disableButton ? '' : username}
+              {disableButton ? '' : fullName}
             </Text>
           </Box>
           {/* Photo Area */}
