@@ -3,11 +3,23 @@ import React, { useState } from 'react';
 import appConfig from '../config.json';
 
 export default function ChatPage() {
-  // Sua lógica vai aqui
 
-  // ./Sua lógica vai aqui
-
+  const [disableButton, setDisableButton] = useState(true);
   const [message, setMessage] = useState('');
+  const [listMessage, setListMessage] = useState([]);
+
+  function handleNewMessage(newMessage) {
+    const message = {
+      text: newMessage,
+      from: 'willamys',
+      id: listMessage.length + 1
+    }
+    setListMessage([
+      message,
+      ...listMessage
+    ])
+    setMessage('');
+  }
   return (
     <Box
       styleSheet={{
@@ -45,8 +57,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-
-          {/* <MessageList mensagens={[]} /> */}
+          <MessageList messages={listMessage} />
 
           <Box
             as="form"
@@ -59,9 +70,22 @@ export default function ChatPage() {
               placeholder="Insira sua mensagem aqui..."
               type="textarea"
               value={message}
-              onChange={function (e) {
+              onChange={(e) => {
                 const value = e.target.value;
+                if (value.length > 0) {
+                  setDisableButton(false);
+                } else {
+                  setDisableButton(true);
+                }
                 setMessage(value);
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault(); //removendo a ação padrão do enter
+                  // adicionando o texto digitado na lista de mensagens
+                  handleNewMessage(message);
+                  setDisableButton(true);
+                }
               }}
               styleSheet={{
                 width: '100%',
@@ -72,6 +96,24 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: '12px',
                 color: appConfig.theme.colors.neutrals[200],
+              }}
+            />
+            <Button
+              type='submit'
+              label='Enviar'
+              onClick={(e) => {
+                e.preventDefault(); //removendo a ação padrão do enter
+                // adicionando o texto digitado na lista de mensagens
+                handleNewMessage(message);
+                setDisableButton(true);
+              }}
+              disabled={disableButton}
+              fullWidth
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColor: appConfig.theme.colors.primary[500],
+                mainColorLight: appConfig.theme.colors.primary[400],
+                mainColorStrong: appConfig.theme.colors.primary[600],
               }}
             />
           </Box>
@@ -113,50 +155,53 @@ function MessageList(props) {
         marginBottom: '16px',
       }}
     >
-
-      <Text
-        key={mensagem.id}
-        tag="li"
-        styleSheet={{
-          borderRadius: '5px',
-          padding: '6px',
-          marginBottom: '12px',
-          hover: {
-            backgroundColor: appConfig.theme.colors.neutrals[700],
-          }
-        }}
-      >
-        <Box
-          styleSheet={{
-            marginBottom: '8px',
-          }}
-        >
-          <Image
-            styleSheet={{
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              display: 'inline-block',
-              marginRight: '8px',
-            }}
-            src={`https://github.com/vanessametonini.png`}
-          />
-          <Text tag="strong">
-            {mensagem.de}
-          </Text>
+      {props.messages.map((messageNow) => {
+        return (
           <Text
+            key={messageNow.id}
+            tag="li"
             styleSheet={{
-              fontSize: '10px',
-              marginLeft: '8px',
-              color: appConfig.theme.colors.neutrals[300],
+              borderRadius: '5px',
+              padding: '6px',
+              marginBottom: '12px',
+              hover: {
+                backgroundColor: appConfig.theme.colors.neutrals[700],
+              }
             }}
-            tag="span"
           >
-            {(new Date().toLocaleDateString())}
+            <Box
+              styleSheet={{
+                marginBottom: '8px',
+              }}
+            >
+              <Image
+                styleSheet={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  marginRight: '8px',
+                }}
+                src={`https://github.com/willamys.png`}
+              />
+              <Text tag="strong">
+                {messageNow.from}
+              </Text>
+              <Text
+                styleSheet={{
+                  fontSize: '10px',
+                  marginLeft: '8px',
+                  color: appConfig.theme.colors.neutrals[300],
+                }}
+                tag="span"
+              >
+                {(new Date().toLocaleDateString())}
+              </Text>
+            </Box>
+            {messageNow.text}
           </Text>
-        </Box>
-        {mensagem.texto}
-      </Text>
+        );
+      })}
     </Box>
   )
 }
