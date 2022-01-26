@@ -32,9 +32,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
-      <Head>
+      {/* <Head>
         <title>NutriCord</title>
-      </Head>
+      </Head> */}
       <Component {...pageProps} />
     </>
   );
