@@ -20,6 +20,13 @@ export default function ChatPage() {
     ])
     setMessage('');
   }
+
+  function handleDeleteMessage(id) {
+    const newListMessage = listMessage.filter((message) => {
+      return message.id != id
+    });
+    setListMessage(newListMessage);
+  }
   return (
     <Box
       styleSheet={{
@@ -57,7 +64,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList messages={listMessage} />
+          <MessageList messages={listMessage} handleDeleteMessage={handleDeleteMessage} />
 
           <Box
             as="form"
@@ -83,8 +90,10 @@ export default function ChatPage() {
                 if (e.key === "Enter") {
                   e.preventDefault(); //removendo a ação padrão do enter
                   // adicionando o texto digitado na lista de mensagens
-                  handleNewMessage(message);
-                  setDisableButton(true);
+                  if (message.length > 0) {
+                    handleNewMessage(message);
+                    setDisableButton(true);
+                  }
                 }
               }}
               styleSheet={{
@@ -99,16 +108,18 @@ export default function ChatPage() {
               }}
             />
             <Button
-              type='submit'
               label='Enviar'
               onClick={(e) => {
-                e.preventDefault(); //removendo a ação padrão do enter
-                // adicionando o texto digitado na lista de mensagens
                 handleNewMessage(message);
                 setDisableButton(true);
               }}
               disabled={disableButton}
               fullWidth
+              styleSheet={{
+                maxWidth: '100px',
+                padding: '13px',
+                marginBottom: '8px'
+              }}
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
                 mainColor: appConfig.theme.colors.primary[500],
@@ -196,6 +207,29 @@ function MessageList(props) {
                 tag="span"
               >
                 {(new Date().toLocaleDateString())}
+              </Text>
+              <Text
+                tag='span'
+                onClick={(e) => {
+                  props.handleDeleteMessage(messageNow.id);
+                  console.log(messageNow.id);
+                }}
+                fullWidth
+                styleSheet={{
+                  display: 'flex',
+                  maxWidth: '10px',
+                  marginLeft: 'auto',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+                buttonColors={{
+                  contrastColor: appConfig.theme.colors.neutrals["000"],
+                  mainColor: appConfig.theme.colors.neutrals[700],
+                  mainColorLight: appConfig.theme.colors.neutrals,
+                  mainColorStrong: appConfig.theme.colors.neutrals[700],
+                }}
+              >x
               </Text>
             </Box>
             {messageNow.text}
