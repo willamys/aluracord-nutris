@@ -1,11 +1,13 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import React from 'react';
+import React, { useState } from 'react';
 import appConfig from '../config.json';
 
 export default function ChatPage() {
   // Sua lógica vai aqui
 
   // ./Sua lógica vai aqui
+
+  const [message, setMessage] = useState('');
   return (
     <Box
       styleSheet={{
@@ -56,6 +58,11 @@ export default function ChatPage() {
             <TextField
               placeholder="Insira sua mensagem aqui..."
               type="textarea"
+              value={message}
+              onChange={function (e) {
+                const value = e.target.value;
+                setMessage(value);
+              }}
               styleSheet={{
                 width: '100%',
                 border: '0',
