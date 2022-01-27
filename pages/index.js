@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 
-
 function Title(props) {
 
   const Tag = props.tag || "h1"; //recebendo o valor da tag
@@ -37,6 +36,7 @@ function Title(props) {
 
 function HomePage() {
 
+  const image = 'https://raw.githubusercontent.com/willamys/aluracord-nutris/main/img/githubnot.png';
   const [username, setUsername] = useState();
   const [disableButton, setDisableButton] = useState(true);
   const [fullName, setFullName] = useState();
@@ -157,7 +157,7 @@ function HomePage() {
                   borderRadius: '50%',
                   marginBottom: '16px',
                 }}
-                src={disableButton ? '' : `https://github.com/${username}.png`}
+                src={disableButton ? image : `https://github.com/${username}.png`}
               />
             </a>
             <Text
