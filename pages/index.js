@@ -1,5 +1,5 @@
 import appConfig from '../config.json';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 
@@ -41,6 +41,14 @@ function HomePage() {
   const [disableButton, setDisableButton] = useState(true);
   const [fullName, setFullName] = useState();
   const router = useRouter();
+
+  useEffect(() => {
+    fetch('https://api.github.com/users/' + username)
+      .then(async (response) => {
+        const data = await response.json()
+        setFullName(data.name)
+      });
+  }, [username])
 
   return (
     <>
@@ -100,9 +108,6 @@ function HomePage() {
                 } else {
                   setDisableButton(true);
                 }
-                fetch('https://api.github.com/users/' + value)
-                  .then(response => response.json())
-                  .then(data => setFullName(data.name));
                 setUsername(value)
               }}
               fullWidth
