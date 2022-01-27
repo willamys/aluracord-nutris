@@ -23,9 +23,9 @@ export default function ChatPage() {
 
   function handleDeleteMessage(id) {
     const newListMessage = listMessage.filter((message) => {
-      return message.id != id
+      return message.id != id //new list without id passed.
     });
-    setListMessage(newListMessage);
+    setListMessage(newListMessage); //update list
   }
   return (
     <Box
@@ -88,10 +88,9 @@ export default function ChatPage() {
               }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  e.preventDefault(); //removendo a ação padrão do enter
-                  // adicionando o texto digitado na lista de mensagens
+                  e.preventDefault(); //remove default action from enter
                   if (message.length > 0) {
-                    handleNewMessage(message);
+                    handleNewMessage(message); // add the text typed in listMessage
                     setDisableButton(true);
                   }
                 }
@@ -183,6 +182,9 @@ function MessageList(props) {
             <Box
               styleSheet={{
                 marginBottom: '8px',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
               <Image
@@ -212,7 +214,6 @@ function MessageList(props) {
                 tag='span'
                 onClick={(e) => {
                   props.handleDeleteMessage(messageNow.id);
-                  console.log(messageNow.id);
                 }}
                 fullWidth
                 styleSheet={{
