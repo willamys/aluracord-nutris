@@ -176,6 +176,9 @@ function Header() {
           Chat
         </Text>
         <Button
+          onClick={() => {
+            router.push('/');
+          }}
           variant='tertiary'
           colorVariant='neutral'
           label='Logout'
