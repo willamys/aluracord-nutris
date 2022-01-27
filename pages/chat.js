@@ -1,31 +1,66 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxMDQwMywiZXhwIjoxOTU4ODg2NDAzfQ.3h_kReGvJMrRqTvte_CYkIHJSB05FPUy4Rhjok5HlvI';
+const SUPABASE_URL = 'https://vwcaigmxumbdsdvdeygq.supabase.co';
+
+// Create a single supabase client for interacting with your database
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
 
   const [disableButton, setDisableButton] = useState(true);
   const [message, setMessage] = useState('');
-  const [listMessage, setListMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(async () => {
+    await supabaseClient //select messages stored in the supabase
+      .from('messages')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        console.log(data);
+        setMessages(data);
+      })
+  }, [message]); //useEffect only run when the 'messages' update
 
   function handleNewMessage(newMessage) {
     const message = {
       text: newMessage,
       from: 'willamys',
-      id: listMessage.length + 1
+      // id: messages.length + 1
     }
-    setListMessage([
-      message,
-      ...listMessage
-    ])
+
+    supabaseClient
+      .from('messages')
+      .insert([
+        message //insert the message in the supabase
+      ])
+      .then(({ data }) => {
+        console.log(data);
+        setMessages([
+          data[0], //recover the last message sent to update 'messages'
+          ...messages
+        ])
+      })
+
     setMessage('');
   }
 
-  function handleDeleteMessage(id) {
-    const newListMessage = listMessage.filter((message) => {
+  async function handleDeleteMessage(id) {
+    await supabaseClient
+      .from('messages') //delete the message from supabase
+      .delete()
+      .match({ id: id })
+      .then(({ data }) => {
+        console.log(data)
+      })
+    const newListMessage = messages.filter((message) => {
       return message.id != id //new list without id passed.
     });
-    setListMessage(newListMessage); //update list
+    setMessages(newListMessage); //update list
   }
   return (
     <Box
@@ -64,7 +99,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList messages={listMessage} handleDeleteMessage={handleDeleteMessage} />
+          <MessageList messages={messages} handleDeleteMessage={handleDeleteMessage} />
 
           <Box
             as="form"
@@ -90,7 +125,7 @@ export default function ChatPage() {
                 if (e.key === "Enter") {
                   e.preventDefault(); //remove default action from enter
                   if (message.length > 0) {
-                    handleNewMessage(message); // add the text typed in listMessage
+                    handleNewMessage(message); // add the text typed in messages
                     setDisableButton(true);
                   }
                 }
@@ -157,7 +192,7 @@ function MessageList(props) {
     <Box
       tag="ul"
       styleSheet={{
-        overflow: 'hidden',
+        overflow: 'auto',
         display: 'flex',
         flexDirection: 'column-reverse',
         flex: 1,
@@ -195,7 +230,7 @@ function MessageList(props) {
                   display: 'inline-block',
                   marginRight: '8px',
                 }}
-                src={`https://github.com/willamys.png`}
+                src={`https://github.com/${messageNow.from}.png`}
               />
               <Text tag="strong">
                 {messageNow.from}
@@ -215,20 +250,14 @@ function MessageList(props) {
                 onClick={(e) => {
                   props.handleDeleteMessage(messageNow.id);
                 }}
-                fullWidth
                 styleSheet={{
                   display: 'flex',
                   maxWidth: '10px',
                   marginLeft: 'auto',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-                buttonColors={{
-                  contrastColor: appConfig.theme.colors.neutrals["000"],
-                  mainColor: appConfig.theme.colors.neutrals[700],
-                  mainColorLight: appConfig.theme.colors.neutrals,
-                  mainColorStrong: appConfig.theme.colors.neutrals[700],
+                  cursor: 'pointer',
+                  color: 'white'
                 }}
               >x
               </Text>
