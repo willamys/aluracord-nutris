@@ -146,6 +146,9 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+            <ButtonSendSticker onStickerClick={(sticker) => {
+              handleNewMessage(`:sticker:${sticker}`)
+            }} />
             <Button
               label='Enviar'
               onClick={(e) => {
@@ -157,7 +160,8 @@ export default function ChatPage() {
               styleSheet={{
                 maxWidth: '100px',
                 padding: '13px',
-                marginBottom: '8px'
+                marginBottom: '8px',
+                marginLeft: '8px'
               }}
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -270,7 +274,12 @@ function MessageList(props) {
               >x
               </Text>
             </Box>
-            {messageNow.text}
+            {messageNow.text.startsWith(':sticker:') ?
+              (
+                <Image src={messageNow.text.replace(':sticker:', '')} width='100px' />
+              )
+              : (messageNow.text)
+            }
           </Text>
         );
       })}
