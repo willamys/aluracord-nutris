@@ -12,6 +12,16 @@ const SUPABASE_URL = 'https://vwcaigmxumbdsdvdeygq.supabase.co';
 // Create a single supabase client for interacting with your database
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function listenMessagesRealTime(addNewMessage) {
+  return supabaseClient
+    .from('messages')
+    .on('INSERT', (responseNewMessage) => {
+      addNewMessage(responseNewMessage.new); //get the new message sent
+    })
+    .subscribe(); //function for supabase that listen if your table has a new record
+  // you need to activate that feature in the supabase to work
+}
+
 export default function ChatPage() {
 
   const router = useRouter();
@@ -26,10 +36,18 @@ export default function ChatPage() {
       .select('*')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
-        console.log(data);
         setMessages(data);
       })
-  }, [message]); //useEffect only run when the 'messages' update
+    listenMessagesRealTime((newMessage) => {
+      setMessages((listNow) => { //when you need to reuse before value(object/array)
+        //you should a function inside the setState 
+        return [
+          newMessage, //recover the last message sent to update 'messages'
+          ...listNow
+        ] //update the messages with the new sent from supabase 
+      });
+    });
+  }, []); //useEffect only run when the 'messages' update
 
   function handleNewMessage(newMessage) {
     const message = {
@@ -45,10 +63,6 @@ export default function ChatPage() {
       ])
       .then(({ data }) => {
         console.log(data);
-        setMessages([
-          data[0], //recover the last message sent to update 'messages'
-          ...messages
-        ])
       })
 
     setMessage('');
