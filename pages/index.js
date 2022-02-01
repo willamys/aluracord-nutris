@@ -81,7 +81,7 @@ function HomePage() {
             onSubmit={function (e) {
               e.preventDefault();
               //location.href = "chat"
-              router.push('/chat');
+              router.push(`/chat?username=${username}`);
             }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',

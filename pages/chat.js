@@ -2,6 +2,9 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/router'
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
+
 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxMDQwMywiZXhwIjoxOTU4ODg2NDAzfQ.3h_kReGvJMrRqTvte_CYkIHJSB05FPUy4Rhjok5HlvI';
 const SUPABASE_URL = 'https://vwcaigmxumbdsdvdeygq.supabase.co';
@@ -11,6 +14,8 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
 
+  const router = useRouter();
+  const userLogIn = router.query.username;
   const [disableButton, setDisableButton] = useState(true);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -29,7 +34,7 @@ export default function ChatPage() {
   function handleNewMessage(newMessage) {
     const message = {
       text: newMessage,
-      from: 'willamys',
+      from: userLogIn,
       // id: messages.length + 1
     }
 
